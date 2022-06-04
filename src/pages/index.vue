@@ -1,41 +1,68 @@
 <script setup lang="ts">
 import { isObject } from "@vueuse/core";
 import { generateTree } from "~/composables/logic";
-import { Ref, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { isDark } from "~/composables";
 import { isArray } from "~/utils/get-type";
-import { debounce } from "lodash";
-const canvasContainer = ref(null) as Ref; // canvas容器
+const canvasContainer = $(ref()); // canvas容器
 const canvas = document.createElement("canvas"); // canvas画布
 const size = 30; // 用于计算二叉树初始渲染尺寸
-const BFSArray = ref(""); // 层序遍历数组
-const JSONTree = ref(""); // Json树
+const BFSArrayText = $(ref("[1,2,3,4,null,6,7]")); // 层序遍历数组
 
-/**
- * 如果层序遍历的数组合法，生成对应JSON以及树
- **/
-const handleUpdateJSON = debounce((v: string) => {
-  const arr = BFSArrayValidated(v);
-  if (!arr) return;
-  const tree = generateTree(arr);
-  JSONTree.value = JSON.stringify(tree, null, 4);
-  PrettyBT.drawBinaryTree(canvas, tree, size);
-}, 700);
+// 从第一个textArea解析出的BFS Array
+const BFSArray = computed({
+  get: () => {
+    const arr = BFSArrayValidated(BFSArrayText);
+    if (!arr) return BFSArrayText;
+    return arr;
+  },
+  set: (val) => {
+    BFSArray.value = val;
+  },
+});
+// Json树
+const JSONTree = computed(() => generateTree(BFSArray.value));
 
-watch(BFSArray, handleUpdateJSON);
+// 第二个textArea显示的JSON文本
+const JSONTreeText = computed({
+  get: () => {
+    let structuredJson = "";
+    try {
+      structuredJson = JSON.stringify(JSONTree.value, null, 4);
+      return structuredJson;
+    } catch (err) {}
+  },
+  set: (val) => {
+    JSONTreeText.value = val;
+  },
+});
+
+watch(
+  JSONTree,
+  () => {
+    PrettyBT.drawBinaryTree(canvas, JSONTree.value, size);
+  },
+  {
+    deep: true,
+  }
+);
+
 /**
  * 校验BFS Array的格式
  **/
 function BFSArrayValidated(val: string) {
-  const arr = JSON.parse(val);
-  return isArray(arr) ? arr : false;
+  let arr = null;
+  try {
+    arr = JSON.parse(val);
+    return isArray(arr) ? arr : false;
+  } catch (err) {}
 }
+
 onMounted(() => {
-  var tree = { val: 1, left: { val: 2 }, right: { val: 3 } };
-  // or: var tree = PrettyBT.treeFromString("[a,b,c,,d]");
-  canvasContainer.value.appendChild(canvas);
-  PrettyBT.drawBinaryTree(canvas, tree, size);
+  canvasContainer.appendChild(canvas);
+  PrettyBT.drawBinaryTree(canvas, JSONTree.value, size);
 });
+
 function darkModeShim() {
   return "text-gray-5";
 }
@@ -54,7 +81,7 @@ function darkModeShim() {
         border="1 gray-500/40"
         b-rd-2
         shadow
-        v-model="BFSArray"
+        v-model="BFSArrayText"
         :class="isDark && darkModeShim()"
       ></textarea>
 
@@ -63,7 +90,7 @@ function darkModeShim() {
         rows="15"
         cols="40"
         border="1 gray-500/40"
-        v-model="JSONTree"
+        v-model="JSONTreeText"
         b-rd-2
         shadow
         :class="isDark && darkModeShim()"
