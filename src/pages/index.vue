@@ -34,7 +34,7 @@ function trigger2(val: string) {
 
 onMounted(() => {
   canvasContainer.appendChild(canvas);
-  trigger1("[1,2,3,null,5,6,7]");
+  trigger1(`["tree",2,3,null,5,6,7]`);
 });
 
 function darkModeShim() {
@@ -43,7 +43,8 @@ function darkModeShim() {
 </script>
 
 <template>
-  Please make sure that Count (TreeNodes) > 1 , and you can also enter a tree in JSON format :)
+  Please make sure that Count (TreeNodes) > 1 , and you can also enter a tree in
+  JSON format :)
   <div flex="~ gap-2">
     <!-- Left user input area -->
     <div flex-col>
