@@ -12,7 +12,7 @@ export class TreeNode {
 
 /**
  * 根据层序遍历数组生成JSON二叉树
- * @param arr 
+ * @param array 
  * @returns JSON Tree
  */
 export const generateTree = (arr: Array<any>) => {
@@ -21,7 +21,7 @@ export const generateTree = (arr: Array<any>) => {
     let i = 1;
     for (let node of Nodes) {
         if (arr[i] !== null) {
-            Nodes.push((node.left = new TreeNode(arr[i]))); 
+            Nodes.push((node.left = new TreeNode(arr[i])));
         } else {
             node.left = null;
         }
@@ -36,4 +36,30 @@ export const generateTree = (arr: Array<any>) => {
         if (i == arr.length) return tree;
     }
 }
-
+/**
+ * 根据JSON树生成二叉树层序数组
+ * @param node 
+ * @returns array
+ */
+export const bfs = (node:any) => {
+    let result = [];
+    let queue = [];
+    queue.push(node);
+    let pointer = 0;
+    while (pointer < queue.length) {
+        let node = queue[pointer++]; // // 这里不使用 shift 方法（复杂度高），用一个指针代替
+        if (node) {
+            result.push(node.val);
+            queue.push(node.left);
+            queue.push(node.right);
+        } else {
+            result.push(null);
+        }
+    }
+    let n = result.length - 1;
+    while (!result[n]) {
+        result.pop();
+        n--;
+    }
+    return result;
+}
