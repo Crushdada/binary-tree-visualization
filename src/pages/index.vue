@@ -1,49 +1,49 @@
 <script setup lang="ts">
-import { isObject } from "@vueuse/core";
-import { generateTree } from "~/composables/logic";
-import { Ref, ref, onMounted } from "vue";
+import { generateTree, bfs } from "~/composables/logic";
+import { ref, onMounted } from "vue";
 import { isDark } from "~/composables";
-import { isArray } from "~/utils/get-type";
+import { isArray, isObject } from "~/utils/get-type";
 import { debounce } from "lodash";
-const canvasContainer = ref(null) as Ref; // canvas容器
+const canvasContainer = $(ref()); // canvas容器
 const canvas = document.createElement("canvas"); // canvas画布
 const size = 30; // 用于计算二叉树初始渲染尺寸
-const BFSArray = ref(""); // 层序遍历数组
-const JSONTree = ref(""); // Json树
-
-/**
- * 如果层序遍历的数组合法，生成对应JSON以及树
- **/
-const handleUpdateJSON = debounce((v: string) => {
-  const arr = BFSArrayValidated(v);
-  if (!arr) return;
-  const tree = generateTree(arr);
-  JSONTree.value = JSON.stringify(tree, null, 4);
-  PrettyBT.drawBinaryTree(canvas, tree, size);
-}, 700);
-
-watch(BFSArray, handleUpdateJSON);
-/**
- * 校验BFS Array的格式
- **/
-function BFSArrayValidated(val: string) {
-  const arr = JSON.parse(val);
-  return isArray(arr) ? arr : false;
+const BFSArrayText = ref(""); // 层序遍历数组
+const JSONTreeText = ref(""); // JSON树
+const debounceBuildTree1 = debounce(trigger1, 500);
+const debounceBuildTree2 = debounce(trigger2, 500);
+function trigger1(val: string) {
+  try {
+    BFSArrayText.value = val;
+    const arr = JSON.parse(BFSArrayText.value);
+    if (!isArray(arr)) return;
+    const JSONTree = generateTree(arr);
+    JSONTreeText.value = JSON.stringify(JSONTree, null, 4);
+    PrettyBT.drawBinaryTree(canvas, JSONTree, size);
+  } catch (err) {}
 }
+function trigger2(val: string) {
+  try {
+    BFSArrayText.value = val;
+    const tree = JSON.parse(BFSArrayText.value);
+    if (!isObject(tree)) return;
+    const bfsArray = bfs(tree);
+    BFSArrayText.value = JSON.stringify(bfsArray);
+    PrettyBT.drawBinaryTree(canvas, tree, size);
+  } catch (err) {}
+}
+
 onMounted(() => {
-  var tree = { val: 1, left: { val: 2 }, right: { val: 3 } };
-  // or: var tree = PrettyBT.treeFromString("[a,b,c,,d]");
-  canvasContainer.value.appendChild(canvas);
-  PrettyBT.drawBinaryTree(canvas, tree, size);
+  canvasContainer.appendChild(canvas);
+  trigger1("[1,2,3,null,5,6,7]");
 });
+
 function darkModeShim() {
   return "text-gray-5";
 }
-// 持久化树
-// useStorage("vue-sweeper-state", play.state);
 </script>
 
 <template>
+  Please make sure that Count (TreeNodes) > 1 , and you can also enter a tree in JSON format :)
   <div flex="~ gap-2">
     <!-- Left user input area -->
     <div flex-col>
@@ -54,7 +54,8 @@ function darkModeShim() {
         border="1 gray-500/40"
         b-rd-2
         shadow
-        v-model="BFSArray"
+        :value="BFSArrayText"
+        @input="debounceBuildTree1($event.target.value)"
         :class="isDark && darkModeShim()"
       ></textarea>
 
@@ -63,7 +64,8 @@ function darkModeShim() {
         rows="15"
         cols="40"
         border="1 gray-500/40"
-        v-model="JSONTree"
+        :value="JSONTreeText"
+        @input="debounceBuildTree2($event.target.value)"
         b-rd-2
         shadow
         :class="isDark && darkModeShim()"
