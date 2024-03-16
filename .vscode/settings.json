@@ -1,11 +1,16 @@
+
 {
+  "eslint.validate": [
+    "javascript",
+    "vue"
+  ],
   "cSpell.words": [
     "Vitesse"
   ],
   "prettier.enable": false,
-  "editor.cursorSmoothCaretAnimation": true,
+  "editor.cursorSmoothCaretAnimation": "on",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "files.associations": {
     "*.css": "postcss"

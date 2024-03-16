@@ -4,17 +4,21 @@ import { ref, onMounted } from "vue";
 import { isDark } from "~/composables";
 import { isArray, isObject } from "~/utils/get-type";
 import { debounce } from "lodash";
-const canvasContainer = $(ref()); // canvas容器
+
+const canvasContainer = ref(null); // canvas容器
 const canvas = document.createElement("canvas"); // canvas画布
 const size = 30; // 用于计算二叉树初始渲染尺寸
 const BFSArrayText = ref(""); // 层序遍历数组
 const JSONTreeText = ref(""); // JSON树
 const debounceBuildTree1 = debounce(trigger1, 500);
 const debounceBuildTree2 = debounce(trigger2, 500);
+
+watch(BFSArrayText, debounceBuildTree1)
+watch(JSONTreeText, debounceBuildTree2)
+
 function trigger1(val: string) {
   try {
-    BFSArrayText.value = val;
-    const arr = JSON.parse(BFSArrayText.value);
+    const arr = JSON.parse(val);
     if (!isArray(arr)) return;
     const JSONTree = generateTree(arr);
     JSONTreeText.value = JSON.stringify(JSONTree, null, 4);
@@ -23,17 +27,15 @@ function trigger1(val: string) {
 }
 function trigger2(val: string) {
   try {
-    BFSArrayText.value = val;
-    const tree = JSON.parse(BFSArrayText.value);
+    const tree = JSON.parse(val);
     if (!isObject(tree)) return;
     const bfsArray = bfs(tree);
     BFSArrayText.value = JSON.stringify(bfsArray);
     PrettyBT.drawBinaryTree(canvas, tree, size);
   } catch (err) {}
 }
-
 onMounted(() => {
-  canvasContainer.appendChild(canvas);
+  canvasContainer.value.appendChild(canvas);
   trigger1(`["tree",2,3,null,5,6,7]`);
 });
 
@@ -55,8 +57,7 @@ function darkModeShim() {
         border="1 gray-500/40"
         b-rd-2
         shadow
-        :value="BFSArrayText"
-        @input="debounceBuildTree1($event.target.value)"
+        v-model="BFSArrayText"
         :class="isDark && darkModeShim()"
       ></textarea>
 
@@ -65,8 +66,7 @@ function darkModeShim() {
         rows="15"
         cols="40"
         border="1 gray-500/40"
-        :value="JSONTreeText"
-        @input="debounceBuildTree2($event.target.value)"
+        v-model="JSONTreeText"
         b-rd-2
         shadow
         :class="isDark && darkModeShim()"

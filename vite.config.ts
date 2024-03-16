@@ -3,6 +3,7 @@
 import path from 'path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+
 import Pages from 'vite-plugin-pages'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -16,6 +17,7 @@ export default defineConfig({
     },
   },
   plugins: [
+
     Vue({
       reactivityTransform: true, // ref.value的shim
     }),
@@ -30,7 +32,7 @@ export default defineConfig({
     AutoImport({
       imports: [
         'vue',
-        'vue/macros', // 全局宏
+        // 'vue/macros', // 全局宏
         'vue-router',
         '@vueuse/core',
       ],
