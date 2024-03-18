@@ -10,8 +10,8 @@ const canvas = document.createElement("canvas"); // canvas画布
 const size = 30; // 用于计算二叉树初始渲染尺寸
 const BFSArrayText = ref(""); // 层序遍历数组
 const JSONTreeText = ref(""); // JSON树
-const debounceBuildTree1 = debounce(trigger1, 500);
-const debounceBuildTree2 = debounce(trigger2, 500);
+const debounceBuildTree1 = debounce(trigger1, 1500);
+const debounceBuildTree2 = debounce(trigger2, 1500);
 
 watch(BFSArrayText, debounceBuildTree1)
 watch(JSONTreeText, debounceBuildTree2)
