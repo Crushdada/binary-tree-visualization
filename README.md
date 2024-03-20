@@ -9,11 +9,11 @@ A binary tree visualization tool.
 </h5>
 
 <h5>
-  [visit site](bt-visual.vercel.app)
+  [visit site](https://bt-visual.vercel.app/)
 </h5>
 
 <h5>
-  [visit site for "Muggles" :)](bt-visualization.netlify.app)
+  [visit site for "Muggles" :)](https://bt-visualization.netlify.app/)
 </h5>
  
 <h5>
