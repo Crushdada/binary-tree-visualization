@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+  <!-- title & desc -->
+  <title lang="en">Online Binary Tree Visualization Tool - Intuitive and Easy Data Structure Demonstration | BT-visualization</title>
+  <meta name="description" content="Explore the comprehensive online Binary Tree Visualization Tool that enables interactive creation, editing, and analysis of binary tree structures. Support for BFS and DFS algorithms, JSON data formats, and applications in learning data structures, algorithm development, and computer science education. Experience efficient tree diagram generation and deepen your understanding of tree algorithms with this powerful tool.">
+  <!-- TODO:multi lang -->
+  <link rel="alternate" hreflang="zh-CN" href="https://binarytree-visual.vercel.app" />
+  <link rel="alternate" hreflang="en" href="https://binarytree-visual.vercel.app?lang=en" />
+  <script src="https://cdn.jsdelivr.net/gh/ggorlen/prettybt@8ad0935/js/pbt.js"></script>
+</head>
+
+<body class="font-sans dark:text-white dark:bg-hex-121212">
+  <div id="app"></div>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="An Intuitive Way to Explore Data Structures">Interactive Binary Tree Model</a>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="Easily Learn Algorithms and Data Structures">Binary Tree Online Simulator</a>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="Quickly Create and Edit Binary Tree Layouts">Binary Tree Graphics Generator</a>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="Visualize BFS and DFS Paths">Binary Tree Traversal Tool</a>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="Optimize Your Search Algorithms">Binary Search Tree Visualization</a>
+  <a style="visibility: hidden;" href="https://bt-visual.vercel.app" title="Easily Convert and Display Your Data">JSON Binary Tree Import</a>
+  <script>
+    (function () {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      const setting = localStorage.getItem('color-schema') || 'auto'
+      if (setting === 'dark' || (prefersDark && setting !== 'light'))
+        document.documentElement.classList.toggle('dark', true)
+    })()
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
